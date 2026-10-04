@@ -1611,6 +1611,18 @@
   <data name="LblFocuserSettleTimeTooltip" xml:space="preserve">
     <value>如果电调移动会导致图像偏移，请在此处设置稳定时间，以秒为单位。</value>
   </data>
+  <data name="LblFocuserPositionTolerance" xml:space="preserve">
+    <value>调焦座位置容差</value>
+  </data>
+  <data name="LblFocuserPositionToleranceTooltip" xml:space="preserve">
+    <value>当设备报告的位置（相对型设备使用 NINA 估算的位置）与目标位置相差不超过此步数时，视为移动完成。设置为 0 表示不使用容差。</value>
+  </data>
+  <data name="LblFocuserMoveToPositionWithTolerance" xml:space="preserve">
+    <value>移动调焦器到位置 {0}（容差 ±{1} 步）</value>
+  </data>
+  <data name="LblFocuserPositionWithinTolerance" xml:space="preserve">
+    <value>位置 {0} 在容差内完成；目标 {1}，偏差 {2} 步，容差 ±{3} 步</value>
+  </data>
   <data name="LblFocuserTempDescription" xml:space="preserve">
     <value>电调温度</value>
   </data>

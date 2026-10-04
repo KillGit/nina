@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -150,11 +150,11 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                 if (lastFocusedTemperature == -1000) {
                     delta = 0;
                     deltaInt = 0;
-                    Logger.Info($"Moving Focuser By Temperature - Slope {slope} * ( DeltaT ) °C (relative mode) - lastTemperature initialized to {temperature}");
+                    Logger.Info($"Moving Focuser By Temperature - Slope {slope} * ( DeltaT ) Â°C (relative mode) - lastTemperature initialized to {temperature}");
                 } else {
                     delta = lastRoundoff + (temperature - lastFocusedTemperature) * slope;
                     deltaInt = (int)Math.Round(delta);
-                    Logger.Info($"Moving Focuser By Temperature - LastRoundoff {lastRoundoff} + Slope {slope} * ( Temperature {temperature} - PrevTemperature {lastFocusedTemperature} ) °C (relative mode) = Delta {delta} / DeltaInt {deltaInt}");
+                    Logger.Info($"Moving Focuser By Temperature - LastRoundoff {lastRoundoff} + Slope {slope} * ( Temperature {temperature} - PrevTemperature {lastFocusedTemperature} ) Â°C (relative mode) = Delta {delta} / DeltaInt {deltaInt}");
                 }
                 int pos = Position;
                 var result = await MoveFocuserInternal(pos + deltaInt, ct);
@@ -213,17 +213,28 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                 try {
                     // Only register to call Halt() when no timeout happens
                     using (ct.Register(() => HaltFocuser())) {
-                        Logger.Info($"Moving Focuser to position {position}");
-                        progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFocuserMoveToPosition"], position) });
+                        var positionTolerance = profileService.ActiveProfile.FocuserSettings.FocuserPositionTolerance;
+                        Logger.Info($"Moving focuser to target={position}, positionTolerance=Â±{positionTolerance} steps");
+                        progress.Report(new ApplicationStatus() { Status = string.Format(Loc.Instance["LblFocuserMoveToPositionWithTolerance"], position, positionTolerance) });
 
-                        while (Focuser.Position != position) {
+                        while (Math.Abs((long)Focuser.Position - position) > positionTolerance) {
                             FocuserInfo.IsMoving = true;
                             timeoutCts.Token.ThrowIfCancellationRequested();
-                            await Focuser.Move(position, timeoutCts.Token);
+                            await Focuser.Move(position, timeoutCts.Token, positionTolerance: positionTolerance);
                         }
 
-                        FocuserInfo.Position = this.Position;
-                        pos = this.Position;
+                        var actualPosition = this.Position;
+                        var positionDeviation = (long)actualPosition - position;
+                        if (positionDeviation != 0) {
+                            var deviationText = positionDeviation.ToString("+#;-#;0");
+                            Logger.Info($"Focuser move accepted within position tolerance: target={position}, actual/estimated={actualPosition}, deviation={deviationText}, tolerance=Â±{positionTolerance}");
+                            progress.Report(new ApplicationStatus() {
+                                Status = string.Format(Loc.Instance["LblFocuserPositionWithinTolerance"], actualPosition, position, deviationText, positionTolerance)
+                            });
+                        }
+
+                        FocuserInfo.Position = actualPosition;
+                        pos = actualPosition;
                         var waitForUpdate = updateTimer.WaitForNextUpdate(timeoutCts.Token);
                         //Wait for focuser to settle
                         if (profileService.ActiveProfile.FocuserSettings.FocuserSettleTime > 0) {

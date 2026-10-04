@@ -40,8 +40,8 @@ namespace NINA.Test.Focuser {
             focuserMock.Reset();
 
             // Move commands set position to input value
-            focuserMock.Setup(x => x.Move(It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>()))
-                 .Callback((int position, CancellationToken ct, int waitInMs) => {
+            focuserMock.Setup(x => x.Move(It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>(), It.IsAny<int>()))
+                 .Callback((int position, CancellationToken ct, int waitInMs, int positionTolerance) => {
                      focuserMock.SetupGet(x => x.Position).Returns(position);
                  });
         }

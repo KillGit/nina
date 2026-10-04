@@ -248,12 +248,12 @@ namespace NINA.Equipment.Equipment.MyFocuser {
             ASIEAF.Stop(id);
         }
 
-        public async Task Move(int position, CancellationToken ct, int waitInMs = 1000) {
+        public async Task Move(int position, CancellationToken ct, int waitInMs = 1000, int positionTolerance = 0) {
 
             var lastPosition = int.MinValue;
             int samePositionCount = 0;
             var lastMovementTime = DateTime.Now;
-            while (position != Position && !ct.IsCancellationRequested) {
+            while (Math.Abs((long)position - Position) > positionTolerance && !ct.IsCancellationRequested) {
                 // Issue move command
                 if (ASIEAF.Move(id, position) != ASIEAF.EAF_ERROR_CODE.EAF_SUCCESS) {
                     Logger.Error("EAF failed to issue move command");

@@ -447,7 +447,7 @@ namespace NINA.Equipment.Equipment {
             throw new NotImplementedException();
         }
 
-        public Task Move(int position, CancellationToken ct, int waitInMs = 1000) {
+        public Task Move(int position, CancellationToken ct, int waitInMs = 1000, int positionTolerance = 0) {
             throw new NotImplementedException();
         }
 

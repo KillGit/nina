@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -29,7 +29,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
         public OvershootBacklashCompensationDecorator(IProfileService profileService, IFocuser focuser) : base(profileService, focuser) {
         }
 
-        public override async Task Move(int position, CancellationToken ct, int waitInMs = 1000) {
+        public override async Task Move(int position, CancellationToken ct, int waitInMs = 1000, int positionTolerance = 0) {
             var startPosition = base.Position;
             var targetPosition = position;
 
@@ -45,7 +45,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                 } else {
                     Logger.Debug($"Overshooting from {startPosition} to overshoot position {overshoot} using a compensation of {backlashCompensation}");
 
-                    await base.Move(overshoot, ct);
+                    await base.Move(overshoot, ct, waitInMs, positionTolerance);
 
                     //Wait for focuser to settle
                     if (profileService.ActiveProfile.FocuserSettings.FocuserSettleTime > 0) {
@@ -57,7 +57,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                 }
             }
 
-            await base.Move(targetPosition, ct);
+            await base.Move(targetPosition, ct, waitInMs, positionTolerance);
         }
 
         private int CalculateBacklashCompensation(int lastPosition, int newPosition) {

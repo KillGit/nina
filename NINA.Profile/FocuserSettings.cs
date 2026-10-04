@@ -37,6 +37,7 @@ namespace NINA.Profile {
             autoFocusExposureTime = 4;
             autoFocusDisableGuiding = false;
             focuserSettleTime = 0;
+            focuserPositionTolerance = 0;
             autoFocusMethod = AFMethodEnum.STARHFR;
             autoFocusTotalNumberOfAttempts = 1;
             autoFocusNumberOfFramesPerPoint = 1;
@@ -180,6 +181,20 @@ namespace NINA.Profile {
             set {
                 if (focuserSettleTime != value) {
                     focuserSettleTime = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int focuserPositionTolerance;
+
+        [DataMember]
+        public int FocuserPositionTolerance {
+            get => focuserPositionTolerance;
+            set {
+                value = Math.Max(0, value);
+                if (focuserPositionTolerance != value) {
+                    focuserPositionTolerance = value;
                     RaisePropertyChanged();
                 }
             }

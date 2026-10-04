@@ -59,8 +59,8 @@ namespace NINA.Test.Focuser {
 
             mockProfileService.Setup(m => m.ActiveProfile.ApplicationSettings.DevicePollingInterval).Returns(2);
 
-            mockFocuser.Setup(m => m.Move(It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>()))
-                .Callback((int position, CancellationToken ct, int waitInMs) => {
+            mockFocuser.Setup(m => m.Move(It.IsAny<int>(), It.IsAny<CancellationToken>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Callback((int position, CancellationToken ct, int waitInMs, int positionTolerance) => {
                     mockFocuser.Setup(m => m.Position).Returns(position);
                 });
 

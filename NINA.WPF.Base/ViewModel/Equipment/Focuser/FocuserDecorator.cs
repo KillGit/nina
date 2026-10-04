@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -89,9 +89,9 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
             this.focuser.Halt();
         }
 
-        public virtual Task Move(int targetPosition, CancellationToken ct, int waitInMs = 1000) {
+        public virtual Task Move(int targetPosition, CancellationToken ct, int waitInMs = 1000, int positionTolerance = 0) {
             lastDirection = DetermineMovingDirection(this.Position, targetPosition);
-            return this.focuser.Move(targetPosition, ct);
+            return this.focuser.Move(targetPosition, ct, waitInMs, positionTolerance);
         }
 
         protected OvershootDirection DetermineMovingDirection(int oldPosition, int newPosition) {

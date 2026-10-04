@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -40,7 +40,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
         /// </summary>
         public override int Position => base.Position - offset;
 
-        public override Task Move(int position, CancellationToken ct, int waitInMs = 1000) {
+        public override Task Move(int position, CancellationToken ct, int waitInMs = 1000, int positionTolerance = 0) {
             var startPosition = base.Position;
             var adjustedTargetPosition = position + offset;
 
@@ -62,7 +62,7 @@ namespace NINA.WPF.Base.ViewModel.Equipment.Focuser {
                 offset += backlashCompensation;
             }
 
-            return base.Move(finalizedTargetPosition, ct);
+            return base.Move(finalizedTargetPosition, ct, waitInMs, positionTolerance);
         }
 
         private int CalculateBacklashCompensation(int lastPosition, int newPosition) {

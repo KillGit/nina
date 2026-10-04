@@ -61,7 +61,7 @@
                                         Margin="4,0,0,0"
                                         VerticalAlignment="Center"
                                         Foreground="{StaticResource ButtonForegroundDisabledBrush}"
-                                        Text="{Binding Source={x:Static coreutil:CoreUtil.VersionFriendlyName}}" />
+                                        Text="{Binding Source={x:Static coreutil:CoreUtil.VersionFriendlyName}, StringFormat='{}{0} Modified by xlong'}" />
                                     <TextBlock
                                         Margin="4,0,0,0"
                                         VerticalAlignment="Center"

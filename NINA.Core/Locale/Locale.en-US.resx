@@ -1612,6 +1612,18 @@ When this trigger is deactivated the application will just skip the Start Exposu
   <data name="LblFocuserSettleTimeTooltip" xml:space="preserve">
     <value>If the focuser introduces image shift when moving, set a settle time in seconds here.</value>
   </data>
+  <data name="LblFocuserPositionTolerance" xml:space="preserve">
+    <value>Focuser position tolerance</value>
+  </data>
+  <data name="LblFocuserPositionToleranceTooltip" xml:space="preserve">
+    <value>Consider movement complete when the reported position (or NINA's estimated position for relative focusers) is within this many steps of the target. Set to 0 to disable tolerance.</value>
+  </data>
+  <data name="LblFocuserMoveToPositionWithTolerance" xml:space="preserve">
+    <value>Moving focuser to position {0} (tolerance ±{1} steps)</value>
+  </data>
+  <data name="LblFocuserPositionWithinTolerance" xml:space="preserve">
+    <value>Focuser completed within tolerance at {0}; target {1}, deviation {2} steps, tolerance ±{3} steps</value>
+  </data>
   <data name="LblFocuserTempDescription" xml:space="preserve">
     <value>Focuser temperature</value>
   </data>

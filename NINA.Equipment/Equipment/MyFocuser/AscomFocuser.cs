@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+    Copyright Â© 2016 - 2024 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -75,17 +75,17 @@ namespace NINA.Equipment.Equipment.MyFocuser {
 
         public double Temperature => GetProperty(nameof(Focuser.Temperature), double.NaN);
 
-        public Task Move(int position, CancellationToken ct, int waitInMs = 1000) {
+        public Task Move(int position, CancellationToken ct, int waitInMs = 1000, int positionTolerance = 0) {
             if (_isAbsolute) {
-                return MoveInternalAbsolute(position, ct, waitInMs);
+                return MoveInternalAbsolute(position, ct, waitInMs, positionTolerance);
             } else {
-                return MoveInternalRelative(position, ct, waitInMs);
+                return MoveInternalRelative(position, ct, waitInMs, positionTolerance);
             }
         }
 
         private static TimeSpan SameFocuserPositionTimeout = TimeSpan.FromMinutes(1);
 
-        private async Task MoveInternalAbsolute(int position, CancellationToken ct, int waitInMs = 1000) {
+        private async Task MoveInternalAbsolute(int position, CancellationToken ct, int waitInMs, int positionTolerance) {
             if (ShouldBeConnected) {
                 var reEnableTempComp = TempComp;
                 if (reEnableTempComp) {
@@ -95,7 +95,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                 var lastPosition = int.MinValue;
                 int samePositionCount = 0;
                 var lastMovementTime = DateTime.Now;
-                while (position != Position && !ct.IsCancellationRequested) {
+                while (Math.Abs((long)position - Position) > positionTolerance && !ct.IsCancellationRequested) {
                     await device.MoveAsync(position, ct);
                     InvalidatePropertyCache();
 
@@ -121,7 +121,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
             }
         }
 
-        private async Task MoveInternalRelative(int position, CancellationToken ct, int waitInMs = 1000) {
+        private async Task MoveInternalRelative(int position, CancellationToken ct, int waitInMs, int positionTolerance) {
             if (ShouldBeConnected) {
                 var reEnableTempComp = TempComp;
                 if (reEnableTempComp) {
@@ -129,7 +129,7 @@ namespace NINA.Equipment.Equipment.MyFocuser {
                 }
 
                 var relativeOffsetRemaining = position - this.Position;
-                while (relativeOffsetRemaining != 0 && !ct.IsCancellationRequested) {
+                while (Math.Abs((long)relativeOffsetRemaining) > positionTolerance && !ct.IsCancellationRequested) {
                     var moveAmount = Math.Min(MaxIncrement, Math.Abs(relativeOffsetRemaining));
                     if (relativeOffsetRemaining < 0) {
                         moveAmount *= -1;
